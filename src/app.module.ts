@@ -3,6 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { envValidationSchema } from './config/env.validation';
+import { DiagnosticoModule } from './diagnostico/diagnostico.module';
 import { HealthModule } from './health/health.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { HealthModule } from './health/health.module';
       },
     ]),
     HealthModule,
+    DiagnosticoModule,
   ],
   providers: [
     {
