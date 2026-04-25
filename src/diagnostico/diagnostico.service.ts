@@ -9,7 +9,6 @@ import { ReporteGeneradoDto } from './dto/reporte-generado.dto';
 import { DeepseekService } from './services/deepseek.service';
 import { EmailService } from './services/email.service';
 import { PdfService } from './services/pdf.service';
-import type { ReporteDeepSeekOutput } from './types/reporte.types';
 
 @Injectable()
 export class DiagnosticoService {
@@ -43,7 +42,9 @@ export class DiagnosticoService {
         reporte,
         pdfBuffer,
       );
-      this.logger.log(`Diagnóstico completo — visitante=${iniciales} envio=${idEnvio}`);
+      this.logger.log(
+        `Diagnóstico completo — visitante=${iniciales} envio=${idEnvio}`,
+      );
 
       return {
         exito: true,
@@ -67,21 +68,6 @@ export class DiagnosticoService {
         'Error al procesar el diagnóstico',
       );
     }
-  }
-
-  async generarPdfDePrueba(
-    dto: GenerarReporteDto,
-  ): Promise<{ pdf: Buffer; nombreArchivo: string; reporte: ReporteDeepSeekOutput }> {
-    const reporte = await this.deepseekService.generarReporte(
-      dto.respuestas,
-      dto.datosContacto,
-    );
-    const pdf = await this.pdfService.generarPdf(
-      reporte,
-      dto.datosContacto.nombre,
-    );
-    const nombreArchivo = `Diagnostico-Ancome-${dto.datosContacto.nombre.replace(/\s+/g, '-')}.pdf`;
-    return { pdf, nombreArchivo, reporte };
   }
 
   private calcularIniciales(nombreCompleto: string): string {

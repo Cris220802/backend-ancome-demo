@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,13 +12,11 @@ import {
   ApiHeader,
   ApiOperation,
   ApiOkResponse,
-  ApiProduces,
   ApiSecurity,
   ApiServiceUnavailableResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import type { Response } from 'express';
 import { SecretKeyGuard } from '../common/guards/secret-key.guard';
 import { DiagnosticoService } from './diagnostico.service';
 import { GenerarReporteDto } from './dto/generar-reporte.dto';
@@ -48,7 +45,7 @@ export class DiagnosticoController {
   @ApiOperation({
     summary: 'Generar y enviar reporte personalizado',
     description:
-      'Recibe las respuestas del cuestionario (8 preguntas) y los datos de contacto del visitante. Genera un reporte personalizado con DeepSeek (vía SDK compatible OpenAI), lo convierte en PDF y lo envía por correo con Resend (Fase 8). Devuelve las 3 oportunidades principales para mostrar en la tablet del stand.',
+      'Recibe las respuestas del cuestionario (8 preguntas) y los datos de contacto del visitante. Genera un reporte personalizado con DeepSeek (vía SDK compatible OpenAI), lo convierte en PDF con Puppeteer y lo envía por correo con Resend (HTML + PDF adjunto). Devuelve las 3 oportunidades principales para mostrar en la tablet del stand.',
   })
   @ApiBody({
     type: GenerarReporteDto,
@@ -58,7 +55,7 @@ export class DiagnosticoController {
   @ApiOkResponse({
     type: ReporteGeneradoDto,
     description:
-      'Reporte generado correctamente. Incluye las 3 oportunidades para la tablet y un flag indicando si el correo fue enviado.',
+      'Reporte generado, PDF renderizado y correo enviado correctamente. Incluye las 3 oportunidades para la tablet y un flag indicando que el correo fue enviado.',
   })
   @ApiBadRequestResponse({
     description:
@@ -66,46 +63,11 @@ export class DiagnosticoController {
   })
   @ApiServiceUnavailableResponse({
     description:
-      'Fallo en la generación del reporte (DeepSeek caído, rate limit, timeout, o respuesta con estructura inválida) o en el envío del correo. Reintentar más tarde.',
+      'Fallo en la generación del reporte (DeepSeek caído, rate limit, timeout, o respuesta con estructura inválida) o en el envío del correo (Resend caído o rechazó). Reintentar más tarde.',
   })
   async generarReporte(
     @Body() dto: GenerarReporteDto,
   ): Promise<ReporteGeneradoDto> {
     return this.diagnosticoService.procesarDiagnostico(dto);
-  }
-
-  @Post('test-pdf')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: '[TEMPORAL — Fase 7] Generar PDF y devolverlo como descarga',
-    description:
-      'Endpoint de prueba para validar la generación del PDF en local. Llama a DeepSeek, renderiza la plantilla y devuelve el PDF crudo como application/pdf. Se elimina en Fase 9.',
-  })
-  @ApiBody({ type: GenerarReporteDto })
-  @ApiProduces('application/pdf')
-  @ApiOkResponse({
-    description: 'PDF binario listo para descargar.',
-    content: { 'application/pdf': {} },
-  })
-  @ApiBadRequestResponse({ description: 'Body inválido.' })
-  @ApiServiceUnavailableResponse({
-    description: 'Fallo en DeepSeek o en el render del PDF.',
-  })
-  async testPdf(
-    @Body() dto: GenerarReporteDto,
-    @Res() res: Response,
-  ): Promise<void> {
-    const { pdf, nombreArchivo } =
-      await this.diagnosticoService.generarPdfDePrueba(dto);
-
-    res
-      .status(HttpStatus.OK)
-      .setHeader('Content-Type', 'application/pdf')
-      .setHeader(
-        'Content-Disposition',
-        `attachment; filename="${nombreArchivo}"`,
-      )
-      .setHeader('Content-Length', pdf.length)
-      .end(pdf);
   }
 }

@@ -1,98 +1,143 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Ancome Backend — Demo de feria
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend NestJS minimalista que recibe las respuestas del cuestionario del stand de Ancome Soluciones, genera un reporte personalizado con DeepSeek, lo renderiza en PDF con Puppeteer y lo envía al visitante por correo con Resend (HTML + PDF adjunto). Pensado para una feria minera de 1 día: **un solo endpoint productivo**, sin base de datos, sin autenticación de usuarios — un *shared secret* en header valida que la petición venga de la app móvil.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack
 
-## Description
+- **NestJS 11** + TypeScript estricto + Node.js 22.x
+- **DeepSeek V4 Pro** vía SDK `openai@6` (DeepSeek expone `chat.completions` compatible OpenAI)
+- **Puppeteer 24** (Chromium headless) + **Handlebars 4** para PDF
+- **Resend 6** para correo transaccional con adjunto
+- `@nestjs/config` + **Joi** para validar variables de entorno al arrancar
+- `@nestjs/throttler` (10 req/min/IP), `helmet`, `class-validator`, **Swagger** (UI en `/api/docs`)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Instalación local
 
-## Project setup
+### Requisitos
+- Node.js **20.x o 22.x**
+- npm 10+
+- Acceso a internet en el primer `npm install` para que Puppeteer descargue Chromium (~300 MB, una sola vez)
+- Credenciales: API key de DeepSeek y de Resend, dominio verificado en Resend
+
+### Pasos
 
 ```bash
-$ npm install
+git clone <repo>
+cd ancome-backend
+npm install
+cp .env.example .env
+# editar .env y completar las API keys
+npm run start:dev
 ```
 
-## Compile and run the project
+Al arrancar verás en consola el puerto, las rutas mapeadas y la URL de Swagger.
 
-```bash
-# development
-$ npm run start
+## Comandos
 
-# watch mode
-$ npm run start:dev
+| Comando | Qué hace |
+|---|---|
+| `npm run start:dev` | Modo watch para desarrollo |
+| `npm run start` | Arranca con `nest start` (sin watch) |
+| `npm run start:prod` | Ejecuta `node dist/main` (requiere build previo) |
+| `npm run build` | Compila TS + copia plantillas `.hbs` a `dist/` |
+| `npm run lint` | Lint con ESLint + autofix |
+| `npm run format` | Formatea con Prettier |
 
-# production mode
-$ npm run start:prod
+## Endpoints
+
+### `GET /health`
+Healthcheck público (sin guard, sin throttler). Devuelve `{ status, timestamp, uptime }`.
+
+### `POST /api/diagnostico/generar-reporte`
+Endpoint principal. Protegido por `SecretKeyGuard`.
+
+**Headers:**
+- `Content-Type: application/json`
+- `x-ancome-secret-key: <ANCOME_SECRET_KEY del .env>`
+
+**Body** (todos los campos requeridos excepto `telefono`):
+
+```json
+{
+  "respuestas": {
+    "q1_rol_empresa": "Contratista de operación",
+    "q2_tamano_operacion": "Entre 30 y 80 personas",
+    "q3_prioridad_automatizacion": "Control de EPP",
+    "q4_velocidad_respuesta": "Nos toma un rato",
+    "q5_stack_registros": "Excel y WhatsApp",
+    "q6_dolor_administrativo": "Armar evidencia",
+    "q7_temperatura_adopcion": "Queremos modernizarnos"
+  },
+  "datosContacto": {
+    "nombre": "Juan Ramírez",
+    "correo": "juan@ejemplo.com",
+    "empresa": "Contratista Demo SA",
+    "puesto": "Gerente de operaciones",
+    "telefono": "+52 555 555 0000",
+    "autorizaContacto": true
+  }
+}
 ```
 
-## Run tests
+**Response 200:**
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```json
+{
+  "exito": true,
+  "mensaje": "Reporte generado y enviado exitosamente a su correo.",
+  "oportunidades": [
+    { "titulo": "...", "descripcion": "...", "ahorroEstimadoHorasSemana": "8-12 horas/semana", "prioridad": "alta" },
+    { "titulo": "...", "descripcion": "...", "ahorroEstimadoHorasSemana": "4-6 horas/semana", "prioridad": "media" },
+    { "titulo": "...", "descripcion": "...", "ahorroEstimadoHorasSemana": "5-8 horas/semana", "prioridad": "alta" }
+  ],
+  "correoEnviado": true
+}
 ```
+
+**Códigos de error:**
+- `400` — body inválido o incompleto
+- `401` — secret key ausente o no coincide
+- `429` — rate limit (10 req/min/IP)
+- `503` — DeepSeek caído / timeout / JSON inválido, o Resend rechazó el envío
+
+Latencia esperada: **~80 segundos** (DeepSeek es el cuello de botella). La app móvil debe mostrar un spinner con copia que prepare al visitante.
+
+### `GET /api/docs`
+Swagger UI. Permite probar el endpoint con el header de auth precargado vía botón **Authorize**.
+
+## Variables de entorno
+
+Ver [`.env.example`](./.env.example) para los valores plantilla. Todas se validan con Joi al arrancar; si falta alguna, el servidor no inicia.
+
+| Variable | Descripción |
+|---|---|
+| `PORT` | Puerto HTTP. Default `3000`. |
+| `NODE_ENV` | `development` o `production`. |
+| `ANCOME_SECRET_KEY` | Shared secret entre app móvil y backend (mín. 32 chars). |
+| `ALLOWED_ORIGINS` | Lista separada por comas de orígenes CORS. |
+| `DEEPSEEK_API_KEY` | API key de DeepSeek. |
+| `DEEPSEEK_MODEL` | Modelo. Default `deepseek-v4-pro`. |
+| `DEEPSEEK_BASE_URL` | URL del endpoint DeepSeek. Default `https://api.deepseek.com`. |
+| `RESEND_API_KEY` | API key de Resend. |
+| `RESEND_FROM_EMAIL` | Dirección de envío (debe estar en un dominio verificado en Resend). |
+| `RESEND_FROM_NAME` | Nombre que aparece como remitente. |
+| `REPORT_SUBJECT` | Asunto del correo enviado al visitante. |
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Ver [`SETUP_NOTES.md`](./SETUP_NOTES.md) para checklist de producción y notas operativas.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Con Docker (recomendado)
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker build -t ancome-backend .
+docker run --rm -p 3000:3000 --env-file .env ancome-backend
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+El [`Dockerfile`](./Dockerfile) es multi-stage: compila en una imagen con todas las deps y produce una runtime slim con Chromium del sistema (`PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium`) — evita descargar Chromium en cada build y mantiene la imagen final liviana.
 
-## Resources
+### Sin Docker
 
-Check out a few resources that may come in handy when working with NestJS:
+`npm run build && PORT=3000 NODE_ENV=production node dist/main`
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+En producción Puppeteer necesita Chromium disponible. La opción más simple es dejar que Puppeteer lo descargue durante `npm install` (ya pasa por defecto). En hosts con sistema de archivos efímero, prefiere instalar Chromium del sistema y setear `PUPPETEER_EXECUTABLE_PATH`.

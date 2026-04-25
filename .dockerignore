@@ -1,0 +1,48 @@
+# Dependencias y artefactos de build (se reconstruyen dentro de la imagen)
+node_modules
+dist
+coverage
+*.tsbuildinfo
+
+# Secretos y env locales (se inyectan con --env-file en runtime)
+.env
+.env.local
+.env.*.local
+
+# Git y metadata del repo
+.git
+.gitignore
+.gitattributes
+
+# Editor / IDE
+.vscode
+.idea
+.claude
+*.swp
+.DS_Store
+Thumbs.db
+
+# Docs y archivos del repo que no necesita la imagen
+README.md
+SETUP_NOTES.md
+*.md
+LICENSE
+
+# Tests (no se ejecutan en runtime)
+test
+**/*.spec.ts
+**/*.test.ts
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Logs y temporales
+*.log
+npm-debug.log*
+.npm
+.eslintcache
+
+# El propio Docker
+Dockerfile
+.dockerignore
