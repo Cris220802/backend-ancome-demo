@@ -7,6 +7,7 @@ import {
 import { GenerarReporteDto } from './dto/generar-reporte.dto';
 import { ReporteGeneradoDto } from './dto/reporte-generado.dto';
 import { DeepseekService } from './services/deepseek.service';
+import { EmailService } from './services/email.service';
 import { PdfService } from './services/pdf.service';
 import type { ReporteDeepSeekOutput } from './types/reporte.types';
 
@@ -17,6 +18,7 @@ export class DiagnosticoService {
   constructor(
     private readonly deepseekService: DeepseekService,
     private readonly pdfService: PdfService,
+    private readonly emailService: EmailService,
   ) {}
 
   async procesarDiagnostico(
@@ -35,23 +37,24 @@ export class DiagnosticoService {
         reporte,
         dto.datosContacto.nombre,
       );
-      this.logger.log(
-        `PDF listo para envío — ${pdfBuffer.length} bytes (correo se envía en Fase 8)`,
-      );
 
-      // Fase 8: enviar correo con Resend usando pdfBuffer + reporte.
+      const { idEnvio } = await this.emailService.enviarReporte(
+        dto.datosContacto,
+        reporte,
+        pdfBuffer,
+      );
+      this.logger.log(`Diagnóstico completo — visitante=${iniciales} envio=${idEnvio}`);
 
       return {
         exito: true,
-        mensaje:
-          'Reporte y PDF generados correctamente. Envío por correo pendiente de implementar.',
+        mensaje: 'Reporte generado y enviado exitosamente a su correo.',
         oportunidades: reporte.oportunidades.map((o) => ({
           titulo: o.titulo,
           descripcion: o.descripcion,
           ahorroEstimadoHorasSemana: o.ahorroEstimadoHorasSemana,
           prioridad: o.prioridad,
         })),
-        correoEnviado: false,
+        correoEnviado: true,
       };
     } catch (error) {
       if (error instanceof ServiceUnavailableException) {

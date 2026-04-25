@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="x-apple-disable-message-reformatting" />
+<title>Su diagnóstico personalizado</title>
+</head>
+<body style="margin:0; padding:0; background:#f5f5f5; font-family:Arial,Helvetica,sans-serif; color:#434343;">
+
+<!-- Preheader (oculto, aparece como preview en la bandeja) -->
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; visibility:hidden; opacity:0; color:transparent; height:0; width:0;">
+  Su reporte de oportunidades de digitalización está listo. Revise las 3 palancas que detectamos para su operación.
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;">
+  <tr>
+    <td align="center" style="padding:24px 12px;">
+
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background:#ffffff; border-radius:8px; overflow:hidden;">
+
+        <!-- HEADER -->
+        <tr>
+          <td style="padding:24px 28px 18px 28px; border-bottom:3px solid #d10000;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td>
+                  <div style="font-size:20px; font-weight:bold; color:#d10000; letter-spacing:1.5px; line-height:1;">ANCOME SOLUCIONES</div>
+                  <div style="font-size:10px; color:#737373; letter-spacing:2px; text-transform:uppercase; margin-top:4px;">Digitalización para operaciones mineras</div>
+                </td>
+                <td align="right" style="font-size:11px; color:#737373;">
+                  <strong style="color:#434343; display:block; font-size:12px;">Diagnóstico personalizado</strong>
+                  {{fechaGeneracion}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- SALUDO -->
+        <tr>
+          <td style="padding:26px 28px 8px 28px;">
+            <h1 style="margin:0 0 14px 0; font-size:20px; color:#434343; font-weight:bold;">Hola, {{nombreVisitante}} 👋</h1>
+            <p style="margin:0 0 12px 0; font-size:14px; line-height:1.6; color:#434343;">{{saludo}}</p>
+            <p style="margin:0; font-size:14px; line-height:1.6; color:#434343;">
+              Adjunto a este correo encontrará su <strong>reporte completo en PDF</strong>. Aquí va un resumen breve para que lo tenga a mano.
+            </p>
+          </td>
+        </tr>
+
+        <!-- LECTURA CLAVE -->
+        <tr>
+          <td style="padding:18px 28px 8px 28px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fff8f6; border:1px solid #f3d9d4; border-radius:6px;">
+              <tr>
+                <td style="padding:14px 16px;">
+                  <div style="font-size:10px; font-weight:bold; color:#d10000; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px;">Lectura clave</div>
+                  <div style="font-size:13px; color:#434343; font-style:italic; line-height:1.5;">{{perfilOperativo.lecturaClave}}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- OPORTUNIDADES -->
+        <tr>
+          <td style="padding:24px 28px 8px 28px;">
+            <div style="font-size:10px; font-weight:bold; color:#d10000; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px;">3 oportunidades identificadas</div>
+            <h2 style="margin:0 0 16px 0; font-size:16px; color:#434343;">Dónde puede ganar tiempo y control</h2>
+          </td>
+        </tr>
+
+        {{#each oportunidades}}
+        <tr>
+          <td style="padding:0 28px 12px 28px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e8e8e8; border-radius:8px;">
+              <tr>
+                <td style="padding:14px 16px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:top;">
+                        <div style="font-size:10px; color:#d10000; font-weight:bold; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">Oportunidad {{inc @index}}</div>
+                        <div style="font-size:14px; font-weight:bold; color:#434343;">{{titulo}}</div>
+                      </td>
+                      <td align="right" style="vertical-align:top; padding-left:8px;">
+                        <span style="display:inline-block; font-size:9px; font-weight:bold; text-transform:uppercase; letter-spacing:1px; padding:4px 10px; border-radius:999px; color:#ffffff; background:{{#if (eq prioridad 'alta')}}#0a8043{{else}}{{#if (eq prioridad 'media')}}#e89600{{else}}#737373{{/if}}{{/if}};">{{prioridad}}</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="margin:10px 0 10px 0; font-size:13px; color:#434343; line-height:1.55;">{{descripcion}}</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="background:#f5f5f5; border:1px solid #e8e8e8; border-radius:4px; padding:6px 10px; font-size:11px; color:#434343;">
+                        <strong style="color:#d10000;">Ahorro estimado:</strong> {{ahorroEstimadoHorasSemana}}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {{/each}}
+
+        <!-- PRÓXIMOS PASOS -->
+        <tr>
+          <td style="padding:24px 28px 8px 28px;">
+            <div style="font-size:10px; font-weight:bold; color:#d10000; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px;">Próximos pasos sin compromiso</div>
+            <h2 style="margin:0 0 12px 0; font-size:16px; color:#434343;">Cómo nos podemos seguir conociendo</h2>
+            <p style="margin:0 0 14px 0; font-size:13px; color:#434343; line-height:1.6;">{{proximosPasos.parrafoIntro}}</p>
+          </td>
+        </tr>
+
+        {{#each proximosPasos.opciones}}
+        <tr>
+          <td style="padding:0 28px 8px 28px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border:1px solid #e8e8e8; border-left:3px solid #d10000; border-radius:0 6px 6px 0;">
+              <tr>
+                <td style="padding:12px 14px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle; padding-right:10px;">
+                        <span style="display:inline-block; width:22px; height:22px; line-height:22px; text-align:center; background:#d10000; color:#ffffff; border-radius:50%; font-size:11px; font-weight:bold;">{{inc @index}}</span>
+                      </td>
+                      <td style="vertical-align:middle;">
+                        <div style="font-size:13px; font-weight:bold; color:#434343;">{{titulo}}</div>
+                      </td>
+                    </tr>
+                  </table>
+                  <div style="margin:6px 0 0 32px; font-size:12px; color:#737373; line-height:1.5;">{{descripcion}}</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {{/each}}
+
+        <!-- CIERRE -->
+        <tr>
+          <td style="padding:24px 28px 8px 28px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5; border-radius:8px;">
+              <tr>
+                <td style="padding:18px 20px; font-size:13px; color:#434343; line-height:1.6;">{{cierre}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+          <td style="padding:20px 28px 24px 28px; border-top:1px solid #e8e8e8;">
+            <p style="margin:0; font-size:11px; color:#737373; text-align:center; line-height:1.5;">
+              <strong style="color:#d10000;">Ancome Soluciones</strong> — Soluciones tecnológicas para el sector minero mexicano.<br />
+              Este reporte fue generado a partir de las respuestas que compartió en nuestro stand.<br />
+              Para conversar, responda a este correo o escríbanos a contacto@ancome.mx
+            </p>
+          </td>
+        </tr>
+
+      </table>
+
+      <p style="margin:14px 0 0 0; font-size:10px; color:#a0a0a0; text-align:center;">© Ancome Soluciones · Generado con AncomeBot</p>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
