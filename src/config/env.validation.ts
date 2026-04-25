@@ -11,8 +11,11 @@ export const envValidationSchema = Joi.object({
 
   ALLOWED_ORIGINS: Joi.string().required(),
 
-  ANTHROPIC_API_KEY: Joi.string().required(),
-  ANTHROPIC_MODEL: Joi.string().default('claude-sonnet-4-6'),
+  DEEPSEEK_API_KEY: Joi.string().required(),
+  DEEPSEEK_MODEL: Joi.string().default('deepseek-v4-pro'),
+  DEEPSEEK_BASE_URL: Joi.string()
+    .uri({ scheme: ['http', 'https'] })
+    .default('https://api.deepseek.com'),
 
   RESEND_API_KEY: Joi.string().required(),
   RESEND_FROM_EMAIL: Joi.string().email().required(),
