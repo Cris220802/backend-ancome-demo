@@ -42,7 +42,7 @@ async function bootstrap(): Promise<void> {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Ancome Backend API')
     .setDescription(
-      'Backend de la demo de Ancome Soluciones. Recibe las respuestas del cuestionario del stand, genera un reporte personalizado con Claude y lo envía por correo en PDF.',
+      'Backend de la demo de Ancome Soluciones. Recibe las respuestas del cuestionario del stand, genera un reporte personalizado con DeepSeek y lo envía por correo en PDF.',
     )
     .setVersion('1.0.0')
     .addApiKey(

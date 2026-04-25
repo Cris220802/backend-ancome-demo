@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<title>Diagnóstico personalizado — Ancome Soluciones</title>
+<style>
+  :root {
+    --primary: #d10000;
+    --text: #434343;
+    --muted: #737373;
+    --surface: #f5f5f5;
+    --success: #0a8043;
+    --warning: #e89600;
+    --danger: #d10000;
+    --border: #e8e8e8;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    font-size: 11pt;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page { padding: 0; }
+
+  /* HEADER */
+  .header {
+    border-bottom: 3px solid var(--primary);
+    padding-bottom: 14px;
+    margin-bottom: 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .brand {
+    font-size: 22pt;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .brand-sub {
+    font-size: 9pt;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+  .header-meta {
+    text-align: right;
+    font-size: 9pt;
+    color: var(--muted);
+  }
+  .header-meta strong {
+    color: var(--text);
+    display: block;
+    font-size: 10pt;
+  }
+
+  /* DOC TITLE */
+  .doc-title {
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+  }
+  .doc-subtitle {
+    font-size: 10pt;
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+
+  /* SECTIONS */
+  .section { margin-bottom: 26px; }
+  .section-eyebrow {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 14px 0;
+    line-height: 1.2;
+  }
+
+  .saludo {
+    font-size: 11.5pt;
+    color: var(--text);
+    background: var(--surface);
+    border-left: 3px solid var(--primary);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 28px;
+  }
+
+  .perfil-resumen { margin-bottom: 12px; }
+  .perfil-lectura {
+    background: #fff8f6;
+    border: 1px solid #f3d9d4;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-style: italic;
+    color: var(--text);
+    font-size: 10.5pt;
+  }
+  .perfil-lectura::before {
+    content: "Lectura clave — ";
+    font-style: normal;
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 9pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* OPORTUNIDADES */
+  .oportunidad {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    background: #fff;
+    page-break-inside: avoid;
+  }
+  .oportunidad-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .oportunidad-titulo {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    flex: 1;
+  }
+  .oportunidad-numero {
+    font-size: 9pt;
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .pill {
+    display: inline-block;
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .pill-alta { background: var(--success); }
+  .pill-media { background: var(--warning); }
+  .pill-baja { background: var(--muted); }
+
+  .oportunidad-desc {
+    color: var(--text);
+    margin: 0 0 12px 0;
+    font-size: 10.5pt;
+  }
+  .oportunidad-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 9pt;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .badge strong {
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .impacto {
+    color: var(--muted);
+    font-size: 9.5pt;
+    font-style: italic;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+  .impacto::before {
+    content: "Impacto esperado: ";
+    font-style: normal;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* PRÓXIMOS PASOS */
+  .pasos-intro {
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .paso {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+  .paso-num {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 10pt;
+    font-weight: 700;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .paso-titulo {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 11pt;
+    display: inline;
+  }
+  .paso-desc {
+    margin: 6px 0 0 32px;
+    color: var(--muted);
+    font-size: 10pt;
+  }
+
+  /* CIERRE */
+  .cierre {
+    margin-top: 30px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 30px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 8.5pt;
+    line-height: 1.5;
+  }
+  .footer strong { color: var(--primary); }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="header">
+      <div>
+        <div class="brand">ANCOME SOLUCIONES</div>
+        <div class="brand-sub">Digitalización para operaciones mineras</div>
+      </div>
+      <div class="header-meta">
+        <strong>Diagnóstico personalizado</strong>
+        Generado el {{fechaGeneracion}}
+      </div>
+    </header>
+
+    <h1 class="doc-title">Reporte para {{nombreVisitante}}</h1>
+    <div class="doc-subtitle">Resumen de oportunidades identificadas en el cuestionario del stand.</div>
+
+    <section class="saludo">{{saludo}}</section>
+
+    <section class="section">
+      <div class="section-eyebrow">Su perfil operativo</div>
+      <h2 class="section-title">Lo que entendimos de su operación</h2>
+      <p class="perfil-resumen">{{perfilOperativo.resumen}}</p>
+      <div class="perfil-lectura">{{perfilOperativo.lecturaClave}}</div>
+    </section>
+
+    <section class="section">
+      <div class="section-eyebrow">3 oportunidades identificadas</div>
+      <h2 class="section-title">Dónde puede ganar tiempo y control</h2>
+
+      {{#each oportunidades}}
+      <article class="oportunidad">
+        <div class="oportunidad-numero">Oportunidad {{inc @index}}</div>
+        <div class="oportunidad-head">
+          <h3 class="oportunidad-titulo">{{titulo}}</h3>
+          <span class="pill pill-{{prioridad}}">{{prioridad}}</span>
+        </div>
+        <p class="oportunidad-desc">{{descripcion}}</p>
+        <div class="oportunidad-meta">
+          <span class="badge"><strong>Ahorro estimado:</strong> {{ahorroEstimadoHorasSemana}}</span>
+        </div>
+        <div class="impacto">{{impactoEsperado}}</div>
+      </article>
+      {{/each}}
+    </section>
+
+    <section class="section">
+      <div class="section-eyebrow">Próximos pasos sin compromiso</div>
+      <h2 class="section-title">Cómo nos podemos seguir conociendo</h2>
+      <p class="pasos-intro">{{proximosPasos.parrafoIntro}}</p>
+
+      {{#each proximosPasos.opciones}}
+      <div class="paso">
+        <span class="paso-num">{{inc @index}}</span>
+        <span class="paso-titulo">{{titulo}}</span>
+        <div class="paso-desc">{{descripcion}}</div>
+      </div>
+      {{/each}}
+    </section>
+
+    <div class="cierre">{{cierre}}</div>
+
+    <footer class="footer">
+      <strong>Ancome Soluciones</strong> — Soluciones tecnológicas para el sector minero mexicano.<br />
+      Este reporte fue generado a partir de las respuestas que compartió en nuestro stand.<br />
+      Para conversar con un consultor, responda este correo o escríbanos a contacto@ancome.mx
+    </footer>
+
+  </div>
+</body>
+</html>

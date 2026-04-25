@@ -18,7 +18,7 @@ import type {
 } from '../types/reporte.types';
 
 const REQUEST_TIMEOUT_MS = 30_000;
-const MAX_TOKENS = 2500;
+const MAX_TOKENS = 8192;
 const TEMPERATURE = 0.7;
 const PRIORIDADES_VALIDAS: ReadonlyArray<OportunidadDeepSeek['prioridad']> = [
   'alta',
@@ -83,9 +83,20 @@ export class DeepseekService {
       });
 
       const tokensUsados = response.usage?.total_tokens ?? 0;
+      const completionTokens = response.usage?.completion_tokens ?? 0;
+      const finishReason = response.choices[0]?.finish_reason;
       this.logger.log(
-        `Reporte generado — modelo=${this.model} total_tokens=${tokensUsados}`,
+        `Reporte generado — modelo=${this.model} total_tokens=${tokensUsados} completion_tokens=${completionTokens} finish_reason=${finishReason ?? 'desconocido'}`,
       );
+
+      if (finishReason === 'length') {
+        this.logger.error(
+          `DeepSeek cortó la respuesta por límite de tokens (max_tokens=${MAX_TOKENS}, completion_tokens=${completionTokens}). El JSON está truncado.`,
+        );
+        throw new ServiceUnavailableException(
+          'El reporte generado superó el límite de tokens. Intente de nuevo.',
+        );
+      }
 
       const contenido = response.choices[0]?.message?.content;
       if (!contenido) {
