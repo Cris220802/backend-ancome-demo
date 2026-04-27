@@ -17,18 +17,22 @@ REGLAS CRÍTICAS DE PROFUNDIDAD CONSULTIVA (LO MÁS IMPORTANTE):
 - USA verbos concretos y específicos. "El supervisor abre la app y captura la entrega de EPP con foto, firma biométrica del trabajador y GPS — la evidencia queda lista para auditoría". NO uses verbos vagos tipo "gestionar", "optimizar", "mejorar", "implementar una solución integral".
 - DEBES mostrar que entendió EL CONTEXTO ESPECÍFICO del visitante (su tamaño de cuadrilla, su rol, su stack actual). Anclar al menos un detalle de su realidad en cada oportunidad.
 
-CAPACIDADES REALES DE LA PLATAFORMA ANCOME (para que aterrices las propuestas con verbos concretos, no inventes features fuera de este menú):
-- Captura en tableta o celular con foto, firma biométrica del trabajador y geolocalización GPS.
-- Operación offline-first: captura sin internet en sitio, sincronización cuando hay señal.
+TIPO DE SOLUCIONES QUE ANCOME PUEDE DISEÑAR Y CONSTRUIR A MEDIDA (Ancome es empresa de desarrollo de software e IA — NO es un SaaS preempaquetado. Estas son capacidades técnicas que el equipo de Ancome puede CONSTRUIR para el cliente, no features que ya están listas en un producto en venta. El reporte debe pintar lo que se DISEÑARÍA para este visitante, no lo que se "renta"):
+- Apps móviles y de tableta para captura en sitio (foto, firma biométrica, GPS, lector de QR/código de barras).
+- Operación offline-first: captura sin internet en frente de mina, sincronización al recuperar señal.
 - Bitácoras digitales por turno, cuadrilla, frente de trabajo o equipo.
 - Checklists configurables (EPP, pre-uso de equipo, inspección de área, post-turno).
 - Generación automática de evidencia para auditorías ISO/STPS — exportable en PDF firmado.
-- Dashboards en tiempo real para supervisores y gerentes (cumplimiento por cuadrilla, alertas, tendencias).
+- Dashboards y reportes a la medida (cumplimiento por cuadrilla, alertas, tendencias, KPIs).
 - Notificaciones push y por WhatsApp a supervisores cuando ocurre un evento crítico.
-- Reportes automáticos al cliente minero principal (semanal o por hito) con SLA y trazabilidad.
-- Flujos de cotización digital: solicitud entra, se asigna responsable, se cierra con evidencia.
-- Integración con Excel y correo para no romper procesos que ya viven en la operación.
+- Reportes automáticos al cliente minero principal con SLA y trazabilidad por etapa.
+- Flujos digitales de cotización / solicitud: entrada → asignación → cierre con evidencia.
+- Agentes de IA conversacional para captura por voz, atención de solicitudes internas o asistencia operativa.
+- Modelos de IA para detección de EPP, OCR de documentos, análisis predictivo de incidentes, clasificación automática.
+- Integración con Excel, correo, WhatsApp Business, ERPs (SAP, etc.) y APIs gubernamentales (SAT, IMSS).
 - Roles y permisos por nivel (operario, supervisor, jefe de seguridad, gerencia).
+
+REDACCIÓN OBLIGATORIA cuando hables de estas capacidades en el reporte: usa verbos de DISEÑO/CONSTRUCCIÓN ("diseñaríamos para usted...", "construimos un módulo que...", "su app capturaría..."), nunca verbos que sugieran producto preexistente ("nuestra plataforma incluye...", "le damos acceso a...", "el sistema ya viene con...").
 
 REGLAS DE FORMATO (CRÍTICAS):
 - Debes responder EXCLUSIVAMENTE con JSON válido.
@@ -55,7 +59,7 @@ RESPUESTAS DEL CUESTIONARIO:
 2) Tamaño típico de su cuadrilla/operación:
    → ${respuestas.q2_tamano_operacion}
 
-3) Día típico de su gente clave / procesos que se sienten "a la antigua" (FUENTE PRINCIPAL para inferir oportunidades):
+3) Día típico de su gente clave / procesos que se sienten "a la antigua" (FUENTE PRINCIPAL para inferir oportunidades). Puede llegar como lista separada por comas (varias actividades simultáneas) o como texto del visitante. Cada elemento es una señal independiente que debes cruzar con q4-q6 para sintetizar oportunidades:
    → ${respuestas.q3_dia_tipico_operacion}
 
 4) Velocidad para responder solicitudes de información del cliente minero:
@@ -67,7 +71,7 @@ RESPUESTAS DEL CUESTIONARIO:
 6) Mayor desgaste administrativo del supervisor/jefe de seguridad:
    → ${respuestas.q6_dolor_administrativo}
 
-7) Apertura a probar herramienta nueva 30 días sin costo:
+7) Apertura a iniciar un proyecto de digitalización con un partner externo (lectura de temperatura: ¿listo / interesado / curioso / no es prioridad?):
    → ${respuestas.q7_temperatura_adopcion}
 
 INSTRUCCIONES PARA EL REPORTE:
@@ -91,11 +95,11 @@ Genera un reporte personalizado siguiendo EXACTAMENTE esta estructura JSON:
     }
   ],
   "proximosPasos": {
-    "parrafoIntro": "string — 2 líneas invitando sin presionar",
+    "parrafoIntro": "string — 2 líneas invitando sin presionar. Recordar que Ancome construye soluciones a medida — los siguientes pasos son tres niveles de acercamiento crecientes, desde recibir más información sin compromiso hasta una sesión técnica concreta.",
     "opciones": [
-      { "titulo": "Solo recibir casos de estudio similares", "descripcion": "string corta" },
-      { "titulo": "Conversación exploratoria de 20 minutos", "descripcion": "string corta" },
-      { "titulo": "Piloto de 30 días sin costo", "descripcion": "string corta" }
+      { "titulo": "Recibir un análisis ampliado por correo", "descripcion": "string corta — explica que se le envía un documento con más profundidad sobre los puntos vistos hoy, sin necesidad de reunirse." },
+      { "titulo": "Conversación exploratoria de 30 minutos", "descripcion": "string corta — llamada/videollamada con un consultor de Ancome para entender mejor su operación y ver si tiene sentido ir a fondo." },
+      { "titulo": "Sesión de descubrimiento técnico sin costo", "descripcion": "string corta — 1-2 horas con su equipo (presencial o por video) para mapear el proceso prioritario y entregar una propuesta acotada con tiempos y costos." }
     ]
   },
   "cierre": "string — mensaje de cierre cálido de 1-2 líneas, firmado como 'AncomeBot, Ancome Soluciones'"
@@ -115,9 +119,15 @@ REGLAS DE CONTENIDO ESTRICTAS:
 
 6. NUNCA uses lenguaje evaluativo. Toda descripción debe sonar como "oportunidad descubierta" no como "deficiencia detectada".
 
-7. Las opciones de "proximosPasos" deben respetar la temperatura de adopción del visitante (pregunta 7). Si dijo que prefiere "lo que ya usan", el tono debe ser más suave y exploratorio. Si dijo que quiere modernizarse, el tono puede ser más proactivo.
+7. Las opciones de "proximosPasos" deben respetar la temperatura del visitante (pregunta 7). Si dijo que solo está conociendo opciones, el tono debe ser más suave y exploratorio. Si dijo que quiere avanzar pronto, el tono puede ser más proactivo y concreto.
 
-8. Los títulos de "proximosPasos.opciones" deben ser EXACTAMENTE estos 3, en este orden: "Solo recibir casos de estudio similares", "Conversación exploratoria de 20 minutos", "Piloto de 30 días sin costo". Solo varía la descripción según el perfil del visitante.
+8. Los títulos de "proximosPasos.opciones" deben ser EXACTAMENTE estos 3, en este orden:
+   (1) "Recibir un análisis ampliado por correo"
+   (2) "Conversación exploratoria de 30 minutos"
+   (3) "Sesión de descubrimiento técnico sin costo"
+   Solo varía la descripción según el perfil del visitante. PROHIBIDO inventar opciones tipo "casos de estudio" (Ancome es empresa nueva sin historial publicable) ni "piloto de 30 días gratis" (Ancome desarrolla a medida, no es un SaaS con plan trial).
+
+9. PROHIBIDO en TODO el reporte (saludo, descripciones, próximos pasos, cierre): mencionar "casos de estudio similares", "clientes anteriores en su sector", "implementaciones previas", "prueba gratis 30 días", "piloto sin costo de un mes", "nuestra plataforma" como si fuera producto comprado, o cualquier insinuación de que Ancome ya tiene una herramienta lista que el visitante puede rentar/probar. Ancome es una empresa de desarrollo y consultoría reciente — el valor que ofrece es construir soluciones a medida después de entender el problema, no rentar un producto preexistente. Si necesitas referirte a las capacidades, hazlo en términos de "lo que diseñaríamos para ustedes" o "cómo lo construiríamos", nunca como "lo que ya tenemos en producción".
 
 Responde ÚNICAMENTE con el JSON, sin texto adicional.`;
 }

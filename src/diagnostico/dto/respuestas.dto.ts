@@ -59,8 +59,9 @@ export class RespuestasDto {
   q6_dolor_administrativo!: string;
 
   @ApiProperty({
-    description: 'Temperatura / disposición a adoptar tecnología nueva',
-    example: 'Interesado, dependiendo del equipo',
+    description:
+      'Apertura del visitante a iniciar un proyecto de digitalización con un partner externo (Ancome es desarrollo a medida, no SaaS con prueba gratis)',
+    example: 'Interesados, queremos entender alcance y costos primero',
   })
   @IsString()
   @IsNotEmpty()

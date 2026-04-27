@@ -8,6 +8,10 @@
       {
         "include": "diagnostico/templates/**/*.hbs",
         "outDir": "dist"
+      },
+      {
+        "include": "diagnostico/templates/assets/**/*",
+        "outDir": "dist"
       }
     ],
     "watchAssets": true

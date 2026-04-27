@@ -45,12 +45,19 @@
     color: var(--primary);
     line-height: 1;
   }
+  .brand-logo {
+    max-height: 56px;
+    max-width: 280px;
+    width: auto;
+    height: auto;
+    display: block;
+  }
   .brand-sub {
     font-size: 9pt;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-top: 4px;
+    margin-top: 6px;
   }
   .header-meta {
     text-align: right;
@@ -299,7 +306,11 @@
 
     <header class="header">
       <div>
-        <div class="brand">ANCOME SOLUCIONES</div>
+        {{#if logoDataUrl}}
+          <img src="{{logoDataUrl}}" alt="Ancome Soluciones" class="brand-logo" />
+        {{else}}
+          <div class="brand">ANCOME SOLUCIONES</div>
+        {{/if}}
         <div class="brand-sub">Digitalización para operaciones mineras</div>
       </div>
       <div class="header-meta">
