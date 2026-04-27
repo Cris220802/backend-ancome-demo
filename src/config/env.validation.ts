@@ -23,4 +23,9 @@ export const envValidationSchema = Joi.object({
   RESEND_FROM_NAME: Joi.string().required(),
 
   REPORT_SUBJECT: Joi.string().required(),
+
+  // Correo interno donde recibimos una copia de cada lead generado en el stand
+  // (datos del visitante + respuestas + oportunidades). Persistencia simple por bandeja
+  // de entrada para el demo. Si no se configura, no se envía notificación interna.
+  INTERNAL_NOTIFICATION_EMAIL: Joi.string().email().optional(),
 });

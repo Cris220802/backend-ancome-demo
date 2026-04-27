@@ -46,6 +46,15 @@ export class DiagnosticoService {
         `Diagnóstico completo — visitante=${iniciales} envio=${idEnvio}`,
       );
 
+      // Notificación interna fire-and-forget: persiste el lead en bandeja del equipo
+      // Ancome. Si falla, NO afecta al cliente (ya recibió su reporte).
+      await this.emailService.enviarNotificacionInterna(
+        dto.datosContacto,
+        dto.respuestas,
+        reporte,
+        pdfBuffer,
+      );
+
       return {
         exito: true,
         mensaje: 'Reporte generado y enviado exitosamente a su correo.',
