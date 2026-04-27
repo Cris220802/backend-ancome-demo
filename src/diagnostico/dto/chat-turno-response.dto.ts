@@ -42,6 +42,13 @@ export class TurnoChatDto {
     example: 'Ej: Nos enteramos al rato, a veces al día siguiente.',
   })
   placeholderHint?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'true cuando esta es la ÚLTIMA pregunta del diagnóstico — la respuesta del visitante a este turno disparará finalizar_diagnostico (generación de PDF + envío por correo). Permite al front mostrar UX de "preparando su reporte" tras la respuesta. Default false.',
+    example: false,
+  })
+  esUltimaPregunta?: boolean;
 }
 
 export class TurnoFinalizadoDto {

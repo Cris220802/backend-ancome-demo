@@ -43,12 +43,16 @@ export class DeepseekService {
   private readonly logger = new Logger(DeepseekService.name);
   private readonly client: OpenAI;
   private readonly model: string;
+  private readonly chatModel: string;
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('DEEPSEEK_API_KEY');
     const baseURL = this.configService.get<string>('DEEPSEEK_BASE_URL');
     this.model =
       this.configService.get<string>('DEEPSEEK_MODEL') ?? 'deepseek-v4-pro';
+    this.chatModel =
+      this.configService.get<string>('DEEPSEEK_CHAT_MODEL') ??
+      'deepseek-v4-flash';
 
     if (!apiKey) {
       throw new Error('DEEPSEEK_API_KEY no configurada');
@@ -62,7 +66,7 @@ export class DeepseekService {
     });
 
     this.logger.log(
-      `DeepseekService inicializado con modelo ${this.model} (baseURL=${baseURL})`,
+      `DeepseekService inicializado — reporte=${this.model} chat=${this.chatModel} (baseURL=${baseURL})`,
     );
   }
 
@@ -88,8 +92,9 @@ export class DeepseekService {
     // Campo específico de DeepSeek (no tipado por el SDK de OpenAI):
     // los modelos v4 corren en thinking mode por default, y thinking
     // mode no soporta tool_choice='required'. Se desactiva para chat.
+    // Para chat usamos chatModel (más rápido) en lugar de model (reporte).
     const params = {
-      model: this.model,
+      model: this.chatModel,
       messages,
       tools,
       tool_choice: 'required',
@@ -105,7 +110,7 @@ export class DeepseekService {
       const finishReason = choice?.finish_reason;
       const tokensUsados = response.usage?.total_tokens ?? 0;
       this.logger.log(
-        `Turno de chat — modelo=${this.model} total_tokens=${tokensUsados} finish_reason=${finishReason ?? 'desconocido'}`,
+        `Turno de chat — modelo=${this.chatModel} total_tokens=${tokensUsados} finish_reason=${finishReason ?? 'desconocido'}`,
       );
 
       if (finishReason === 'length') {

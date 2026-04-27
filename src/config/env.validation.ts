@@ -13,6 +13,7 @@ export const envValidationSchema = Joi.object({
 
   DEEPSEEK_API_KEY: Joi.string().required(),
   DEEPSEEK_MODEL: Joi.string().default('deepseek-v4-pro'),
+  DEEPSEEK_CHAT_MODEL: Joi.string().default('deepseek-v4-flash'),
   DEEPSEEK_BASE_URL: Joi.string()
     .uri({ scheme: ['http', 'https'] })
     .default('https://api.deepseek.com'),

@@ -140,12 +140,15 @@ export class ChatService {
       }
     }
 
+    const esUltimaPregunta = args.esUltimaPregunta === true;
+
     return {
       tipo: 'turno',
       mensaje: args.mensaje.trim(),
       modoEntrada: args.modoEntrada,
       opcionesRapidas: requiereOpciones ? args.opcionesRapidas : undefined,
       placeholderHint,
+      esUltimaPregunta,
     };
   }
 
