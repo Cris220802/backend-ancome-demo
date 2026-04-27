@@ -21,13 +21,15 @@ export class RespuestasDto {
   q2_tamano_operacion!: string;
 
   @ApiProperty({
-    description: 'Qué automatizaría mañana si pudiera',
-    example: 'Gestión de EPP y entregas diarias',
+    description:
+      'Síntesis del día típico de la persona clave de la operación: qué hace, qué procesos siente más manuales/artesanales (papel, memoria, llamadas, WhatsApp), qué le interrumpe',
+    example:
+      'El supervisor llega a las 6, pasa lista en cuaderno, reparte EPP anotando en una libreta, y el resto del día atiende llamadas de la oficina pidiéndole datos que él tiene que ir a buscar al frente.',
   })
   @IsString()
   @IsNotEmpty()
   @MaxLength(500)
-  q3_prioridad_automatizacion!: string;
+  q3_dia_tipico_operacion!: string;
 
   @ApiProperty({
     description: 'Velocidad actual de respuesta operativa',

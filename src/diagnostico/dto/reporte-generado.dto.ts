@@ -24,7 +24,9 @@ export class ReporteGeneradoDto {
   @ApiProperty({ example: true })
   exito!: boolean;
 
-  @ApiProperty({ example: 'Reporte generado y enviado exitosamente a su correo.' })
+  @ApiProperty({
+    example: 'Reporte generado y enviado exitosamente a su correo.',
+  })
   mensaje!: string;
 
   @ApiProperty({

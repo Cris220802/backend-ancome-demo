@@ -20,7 +20,10 @@ export class DatosContactoDto {
   @IsNotEmpty()
   correo!: string;
 
-  @ApiProperty({ example: 'Servicios Mineros del Norte SA de CV', maxLength: 200 })
+  @ApiProperty({
+    example: 'Servicios Mineros del Norte SA de CV',
+    maxLength: 200,
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(200)
@@ -39,7 +42,8 @@ export class DatosContactoDto {
   telefono?: string;
 
   @ApiProperty({
-    description: 'Consentimiento explícito del visitante para recibir el reporte y contacto posterior',
+    description:
+      'Consentimiento explícito del visitante para recibir el reporte y contacto posterior',
     example: true,
   })
   @IsBoolean()

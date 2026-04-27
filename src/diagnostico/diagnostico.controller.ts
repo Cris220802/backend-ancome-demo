@@ -9,6 +9,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiExtraModels,
   ApiHeader,
   ApiOperation,
   ApiOkResponse,
@@ -16,11 +17,19 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
   ApiUnauthorizedResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { SecretKeyGuard } from '../common/guards/secret-key.guard';
 import { DiagnosticoService } from './diagnostico.service';
+import { ChatTurnoRequestDto } from './dto/chat-turno-request.dto';
+import {
+  ChatTurnoResponseDto,
+  TurnoChatDto,
+  TurnoFinalizadoDto,
+} from './dto/chat-turno-response.dto';
 import { GenerarReporteDto } from './dto/generar-reporte.dto';
 import { ReporteGeneradoDto } from './dto/reporte-generado.dto';
+import { ChatService } from './services/chat.service';
 
 @ApiTags('diagnostico')
 @ApiSecurity('ancome-secret-key')
@@ -35,10 +44,14 @@ import { ReporteGeneradoDto } from './dto/reporte-generado.dto';
   description:
     'Header x-ancome-secret-key ausente o inválido. Verifica que esté presente y coincida con el configurado en el backend.',
 })
+@ApiExtraModels(TurnoChatDto, TurnoFinalizadoDto)
 @UseGuards(SecretKeyGuard)
 @Controller('api/diagnostico')
 export class DiagnosticoController {
-  constructor(private readonly diagnosticoService: DiagnosticoService) {}
+  constructor(
+    private readonly diagnosticoService: DiagnosticoService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @Post('generar-reporte')
   @HttpCode(HttpStatus.OK)
@@ -69,5 +82,46 @@ export class DiagnosticoController {
     @Body() dto: GenerarReporteDto,
   ): Promise<ReporteGeneradoDto> {
     return this.diagnosticoService.procesarDiagnostico(dto);
+  }
+
+  @Post('chat')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Procesar un turno conversacional con AncomeBot',
+    description:
+      'Recibe el historial conversacional + datos de contacto. Devuelve uno de dos tipos de turno: (a) tipo="turno" con el siguiente mensaje del bot, modoEntrada y opcionesRapidas para que el front renderice la UI; o (b) tipo="finalizado" cuando el bot decide cerrar el diagnóstico — en ese caso ya se generó el PDF y se envió el correo, y se devuelven las 3 oportunidades para mostrar en la tablet. En el primer turno, enviar mensajes=[] para que el bot abra la conversación.',
+  })
+  @ApiBody({
+    type: ChatTurnoRequestDto,
+    description:
+      'Historial conversacional acumulado en el cliente + datos de contacto del visitante.',
+  })
+  @ApiOkResponse({
+    description:
+      'Turno conversacional o cierre del diagnóstico. La forma del payload depende del campo discriminador "tipo".',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(TurnoChatDto) },
+        { $ref: getSchemaPath(TurnoFinalizadoDto) },
+      ],
+      discriminator: {
+        propertyName: 'tipo',
+        mapping: {
+          turno: getSchemaPath(TurnoChatDto),
+          finalizado: getSchemaPath(TurnoFinalizadoDto),
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description:
+      'Body inválido: historial mal formado, mensajes con rol distinto a user/assistant, longitud excedida, o más de 30 mensajes.',
+  })
+  @ApiServiceUnavailableResponse({
+    description:
+      'Fallo con DeepSeek (timeout, rate limit, tool-call malformado), o fallo en la generación del reporte / envío del correo al finalizar el diagnóstico.',
+  })
+  async chat(@Body() dto: ChatTurnoRequestDto): Promise<ChatTurnoResponseDto> {
+    return this.chatService.procesarTurno(dto);
   }
 }

@@ -8,6 +8,7 @@ export interface PerfilOperativoDeepSeek {
 export interface OportunidadDeepSeek {
   titulo: string;
   descripcion: string;
+  comoLoResolveriamos: string;
   ahorroEstimadoHorasSemana: string;
   prioridad: PrioridadOportunidad;
   impactoEsperado: string;

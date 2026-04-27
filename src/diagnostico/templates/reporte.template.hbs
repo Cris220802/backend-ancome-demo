@@ -176,6 +176,27 @@
     margin: 0 0 12px 0;
     font-size: 10.5pt;
   }
+  .oportunidad-solucion {
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 14px;
+    margin: 0 0 12px 0;
+    color: var(--text);
+    font-size: 10pt;
+    line-height: 1.6;
+  }
+  .oportunidad-solucion::before {
+    content: "Cómo lo resolveríamos";
+    display: block;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
   .oportunidad-meta {
     display: flex;
     gap: 10px;
@@ -311,6 +332,7 @@
           <span class="pill pill-{{prioridad}}">{{prioridad}}</span>
         </div>
         <p class="oportunidad-desc">{{descripcion}}</p>
+        <div class="oportunidad-solucion">{{comoLoResolveriamos}}</div>
         <div class="oportunidad-meta">
           <span class="badge"><strong>Ahorro estimado:</strong> {{ahorroEstimadoHorasSemana}}</span>
         </div>

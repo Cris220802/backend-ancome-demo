@@ -6,6 +6,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { APIError } from 'openai';
+import type {
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionMessageParam,
+  ChatCompletionTool,
+} from 'openai/resources/chat/completions';
 import type { DatosContactoDto } from '../dto/datos-contacto.dto';
 import type { RespuestasDto } from '../dto/respuestas.dto';
 import {
@@ -19,7 +24,14 @@ import type {
 
 const REQUEST_TIMEOUT_MS = 30_000;
 const MAX_TOKENS = 8192;
+const CHAT_MAX_TOKENS = 1024;
 const TEMPERATURE = 0.7;
+const CHAT_TEMPERATURE = 0.6;
+
+export type ToolCallResultado = {
+  toolName: string;
+  argumentosRaw: string;
+};
 const PRIORIDADES_VALIDAS: ReadonlyArray<OportunidadDeepSeek['prioridad']> = [
   'alta',
   'media',
@@ -67,6 +79,61 @@ export class DeepseekService {
     this.validarEstructura(parsed);
 
     return parsed;
+  }
+
+  async turnoChat(
+    messages: ChatCompletionMessageParam[],
+    tools: ChatCompletionTool[],
+  ): Promise<ToolCallResultado> {
+    // Campo específico de DeepSeek (no tipado por el SDK de OpenAI):
+    // los modelos v4 corren en thinking mode por default, y thinking
+    // mode no soporta tool_choice='required'. Se desactiva para chat.
+    const params = {
+      model: this.model,
+      messages,
+      tools,
+      tool_choice: 'required',
+      max_tokens: CHAT_MAX_TOKENS,
+      temperature: CHAT_TEMPERATURE,
+      thinking: { type: 'disabled' },
+    } as unknown as ChatCompletionCreateParamsNonStreaming;
+
+    try {
+      const response = await this.client.chat.completions.create(params);
+
+      const choice = response.choices[0];
+      const finishReason = choice?.finish_reason;
+      const tokensUsados = response.usage?.total_tokens ?? 0;
+      this.logger.log(
+        `Turno de chat — modelo=${this.model} total_tokens=${tokensUsados} finish_reason=${finishReason ?? 'desconocido'}`,
+      );
+
+      if (finishReason === 'length') {
+        this.logger.error(
+          `DeepSeek cortó el turno por límite de tokens (max_tokens=${CHAT_MAX_TOKENS}).`,
+        );
+        throw new ServiceUnavailableException(
+          'La respuesta del asistente superó el límite de tokens. Intente de nuevo.',
+        );
+      }
+
+      const toolCall = choice?.message?.tool_calls?.[0];
+      if (!toolCall || toolCall.type !== 'function') {
+        this.logger.error(
+          `DeepSeek no invocó ninguna tool (finish_reason=${finishReason ?? 'desconocido'}).`,
+        );
+        throw new ServiceUnavailableException(
+          'El asistente no pudo continuar la conversación. Intente de nuevo.',
+        );
+      }
+
+      return {
+        toolName: toolCall.function.name,
+        argumentosRaw: toolCall.function.arguments,
+      };
+    } catch (error) {
+      this.manejarErrorDeepseek(error);
+    }
   }
 
   private async llamarDeepseek(userPrompt: string): Promise<string> {
@@ -117,7 +184,8 @@ export class DeepseekService {
     }
 
     if (error instanceof APIError) {
-      const status = error.status;
+      const status: number | undefined =
+        typeof error.status === 'number' ? error.status : undefined;
       if (status === 401) {
         this.logger.error('DEEPSEEK_API_KEY inválida o expirada');
         throw new ServiceUnavailableException('Servicio de IA no disponible');
@@ -207,6 +275,8 @@ export class DeepseekService {
       if (
         typeof o.titulo !== 'string' ||
         typeof o.descripcion !== 'string' ||
+        typeof o.comoLoResolveriamos !== 'string' ||
+        !o.comoLoResolveriamos.trim() ||
         typeof o.ahorroEstimadoHorasSemana !== 'string' ||
         typeof o.impactoEsperado !== 'string' ||
         typeof o.prioridad !== 'string' ||

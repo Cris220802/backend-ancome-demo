@@ -39,10 +39,7 @@ export class EmailService implements OnModuleInit {
 
   onModuleInit(): void {
     Handlebars.registerHelper('inc', (value: number) => value + 1);
-    Handlebars.registerHelper(
-      'eq',
-      (a: unknown, b: unknown) => a === b,
-    );
+    Handlebars.registerHelper('eq', (a: unknown, b: unknown) => a === b);
 
     const templatePath = path.join(
       __dirname,
@@ -112,7 +109,9 @@ export class EmailService implements OnModuleInit {
       }
 
       const idEnvio = data?.id ?? 'unknown';
-      this.logger.log(`Correo enviado — id=${idEnvio} a=${this.enmascararCorreo(datosContacto.correo)}`);
+      this.logger.log(
+        `Correo enviado — id=${idEnvio} a=${this.enmascararCorreo(datosContacto.correo)}`,
+      );
       return { idEnvio };
     } catch (error) {
       if (error instanceof ServiceUnavailableException) {
